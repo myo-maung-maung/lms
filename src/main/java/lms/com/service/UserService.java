@@ -11,4 +11,6 @@ public interface UserService {
     List<UserDTO> allUser();
 
     List<UserDTO> getInstructors();
+
+    List<UserDTO> getStudents();
 }

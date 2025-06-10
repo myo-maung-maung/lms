@@ -29,4 +29,9 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getInstructors() {
         return ResponseEntity.ok(userService.getInstructors());
     }
+
+    @GetMapping("/students")
+    public ResponseEntity<List<UserDTO>> getStudents() {
+        return ResponseEntity.ok(userService.getStudents());
+    }
 }

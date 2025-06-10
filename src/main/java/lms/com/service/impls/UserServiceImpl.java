@@ -41,4 +41,12 @@ public class UserServiceImpl implements UserService {
                 .map(UserMapper::entityToDto)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<UserDTO> getStudents() {
+        return userRepository.findByUserRole(Role.STUDENT)
+                .stream()
+                .map(UserMapper::entityToDto)
+                .collect(Collectors.toList());
+    }
 }

@@ -10,12 +10,10 @@ import lms.com.repository.CourseRepository;
 import lms.com.repository.EnrollmentRepository;
 import lms.com.repository.UserRepository;
 import lms.com.service.EnrollmentService;
-import lms.com.utils.CertificateGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
 @Service
