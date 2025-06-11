@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +48,21 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
         enrollment.setStatus(EnrollmentStatus.APPROVED);
+        return EnrollmentMapper.entityToDto(enrollmentRepository.save(enrollment));
+    }
+
+    @Override
+    public List<EnrollmentDTO> allEnroll() {
+        return enrollmentRepository.findAll().stream()
+                .map(EnrollmentMapper::entityToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public EnrollmentDTO rejectedEnrollment(Long enrollmentId) {
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+        enrollment.setStatus(EnrollmentStatus.REJECT);
         return EnrollmentMapper.entityToDto(enrollmentRepository.save(enrollment));
     }
 }

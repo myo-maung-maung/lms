@@ -1,6 +1,5 @@
 package lms.com.repository;
 
-import lms.com.dtos.UserDTO;
 import lms.com.entity.User;
 import lms.com.entity.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
