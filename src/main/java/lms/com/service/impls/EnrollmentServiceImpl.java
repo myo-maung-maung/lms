@@ -27,7 +27,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final CourseRepository courseRepository;
 
     @Override
-    @Transactional
     public EnrollmentDTO enrollStudent(EnrollmentDTO enrollmentDTO) {
         User student = userRepository.findById(enrollmentDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("Student not found"));
