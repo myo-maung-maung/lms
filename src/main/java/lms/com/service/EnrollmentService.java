@@ -1,6 +1,7 @@
 package lms.com.service;
 
 import lms.com.dtos.EnrollmentDTO;
+import lms.com.dtos.PageDTO;
 
 import java.util.List;
 
@@ -12,4 +13,6 @@ public interface EnrollmentService {
     List<EnrollmentDTO> allEnroll();
 
     EnrollmentDTO rejectedEnrollment(Long enrollmentId);
+
+    PageDTO<EnrollmentDTO> getPaginationEnroll(int page, int size);
 }

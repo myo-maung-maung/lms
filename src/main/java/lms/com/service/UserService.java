@@ -1,5 +1,6 @@
 package lms.com.service;
 
+import lms.com.dtos.PageDTO;
 import lms.com.dtos.UserDTO;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface UserService {
     List<UserDTO> getInstructors();
 
     List<UserDTO> getStudents();
+
+    PageDTO<UserDTO> getPaginationUser(int page, int size);
 }

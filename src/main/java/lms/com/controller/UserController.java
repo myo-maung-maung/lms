@@ -1,5 +1,6 @@
 package lms.com.controller;
 
+import lms.com.dtos.PageDTO;
 import lms.com.dtos.UserDTO;
 import lms.com.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,13 @@ public class UserController {
     @GetMapping("/students")
     public ResponseEntity<List<UserDTO>> getStudents() {
         return ResponseEntity.ok(userService.getStudents());
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<PageDTO<UserDTO>> getPaginationUser(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size
+    ) {
+        return ResponseEntity.ok(userService.getPaginationUser(page, size));
     }
 }

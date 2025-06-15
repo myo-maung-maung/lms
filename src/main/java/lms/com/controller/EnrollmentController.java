@@ -1,6 +1,7 @@
 package lms.com.controller;
 
 import lms.com.dtos.EnrollmentDTO;
+import lms.com.dtos.PageDTO;
 import lms.com.service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -33,5 +34,13 @@ public class EnrollmentController {
     @PutMapping("/reject/{enrollmentId}")
     public ResponseEntity<EnrollmentDTO> reject(@PathVariable Long enrollmentId) {
         return ResponseEntity.ok(enrollmentService.rejectedEnrollment(enrollmentId));
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<PageDTO<EnrollmentDTO>> getPaginationEroll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size
+    ) {
+        return ResponseEntity.ok(enrollmentService.getPaginationEnroll(page, size));
     }
 }

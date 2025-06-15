@@ -1,6 +1,7 @@
 package lms.com.service.impls;
 
 import lms.com.dtos.CourseDTO;
+import lms.com.dtos.PageDTO;
 import lms.com.entity.Category;
 import lms.com.entity.Course;
 import lms.com.entity.User;
@@ -10,7 +11,12 @@ import lms.com.repository.CourseRepository;
 import lms.com.repository.UserRepository;
 import lms.com.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +40,7 @@ public class CourseServiceImpl implements CourseService {
 //    }
 
     @Override
+    @Transactional
     public CourseDTO createCourse(CourseDTO courseDTO) {
         User instructor = userRepository.findById(courseDTO.getInstructorId())
                 .orElseThrow(() -> new RuntimeException("Instructor not found"));
@@ -101,5 +108,16 @@ public class CourseServiceImpl implements CourseService {
         return courses.stream()
                 .map(CourseMapper::entityToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PageDTO<CourseDTO> getPaginationCourse(int page, int size) {
+        Sort sort = Sort.by("id").ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Course> coursePage = courseRepository.findAll(pageable);
+
+        Page<CourseDTO> dtoPage = coursePage.map(CourseMapper::entityToDto);
+
+        return PageDTO.of(dtoPage);
     }
 }

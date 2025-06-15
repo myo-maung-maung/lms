@@ -1,5 +1,6 @@
 package lms.com.service.impls;
 
+import lms.com.dtos.PageDTO;
 import lms.com.dtos.UserDTO;
 import lms.com.entity.User;
 import lms.com.entity.enums.Role;
@@ -7,6 +8,10 @@ import lms.com.mapper.UserMapper;
 import lms.com.repository.UserRepository;
 import lms.com.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +53,16 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(UserMapper::entityToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PageDTO<UserDTO> getPaginationUser(int page, int size) {
+        Sort sort = Sort.by("id").ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<User> userPage = userRepository.findAll(pageable);
+
+        Page<UserDTO> dtoPage = userPage.map(UserMapper::entityToDto);
+
+        return PageDTO.of(dtoPage);
     }
 }

@@ -1,8 +1,10 @@
 package lms.com.controller;
 
 import lms.com.dtos.CourseDTO;
+import lms.com.dtos.PageDTO;
 import lms.com.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,5 +50,13 @@ public class CourseController {
     ) {
         List<CourseDTO> results = courseService.searchCourses(keyword, categoryName);
         return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<PageDTO<CourseDTO>> getPaginationCourse(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "2") int size
+    ) {
+        return ResponseEntity.ok(courseService.getPaginationCourse(page, size));
     }
 }

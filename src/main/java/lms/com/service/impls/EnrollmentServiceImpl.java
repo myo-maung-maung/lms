@@ -1,16 +1,23 @@
 package lms.com.service.impls;
 
+import lms.com.dtos.CourseDTO;
 import lms.com.dtos.EnrollmentDTO;
+import lms.com.dtos.PageDTO;
 import lms.com.entity.Course;
 import lms.com.entity.Enrollment;
 import lms.com.entity.User;
 import lms.com.entity.enums.EnrollmentStatus;
+import lms.com.mapper.CourseMapper;
 import lms.com.mapper.EnrollmentMapper;
 import lms.com.repository.CourseRepository;
 import lms.com.repository.EnrollmentRepository;
 import lms.com.repository.UserRepository;
 import lms.com.service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,5 +70,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
         enrollment.setStatus(EnrollmentStatus.REJECT);
         return EnrollmentMapper.entityToDto(enrollmentRepository.save(enrollment));
+    }
+
+    @Override
+    public PageDTO<EnrollmentDTO> getPaginationEnroll(int page, int size) {
+        Sort sort = Sort.by("id").ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Enrollment> enrollPage = enrollmentRepository.findAll(pageable);
+
+        Page<EnrollmentDTO> dtoPage = enrollPage.map(EnrollmentMapper::entityToDto);
+
+        return PageDTO.of(dtoPage);
     }
 }
