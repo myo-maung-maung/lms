@@ -1,5 +1,6 @@
 package lms.com.controller;
 
+import jakarta.validation.Valid;
 import lms.com.dtos.PageDTO;
 import lms.com.dtos.UserDTO;
 import lms.com.service.UserService;
@@ -17,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/add-user")
-    public ResponseEntity<UserDTO> addUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(userService.addUser(userDTO));
     }
 

@@ -1,5 +1,6 @@
 package lms.com.controller;
 
+import jakarta.validation.Valid;
 import lms.com.dtos.CategoryDTO;
 import lms.com.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/add-category")
-    public ResponseEntity<CategoryDTO> addCategory(@RequestBody CategoryDTO categoryDTO) {
+    public ResponseEntity<CategoryDTO> addCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
         CategoryDTO savedCategory = categoryService.createCategory(categoryDTO);
         return ResponseEntity.ok(savedCategory);
     }

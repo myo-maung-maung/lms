@@ -112,7 +112,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public PageDTO<CourseDTO> getPaginationCourse(int page, int size) {
-        Sort sort = Sort.by("id").ascending();
+        Sort sort = Sort.by("id").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Course> coursePage = courseRepository.findAll(pageable);
 

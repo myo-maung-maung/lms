@@ -74,7 +74,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public PageDTO<EnrollmentDTO> getPaginationEnroll(int page, int size) {
-        Sort sort = Sort.by("id").ascending();
+        Sort sort = Sort.by("id").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Enrollment> enrollPage = enrollmentRepository.findAll(pageable);
 

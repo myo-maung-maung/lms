@@ -1,10 +1,10 @@
 package lms.com.controller;
 
+import jakarta.validation.Valid;
 import lms.com.dtos.CourseDTO;
 import lms.com.dtos.PageDTO;
 import lms.com.service.CourseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ public class CourseController {
     private final CourseService courseService;
 
     @PostMapping("/create")
-    public ResponseEntity<CourseDTO> create(@RequestBody CourseDTO courseDTO) {
+    public ResponseEntity<CourseDTO> create(@Valid @RequestBody CourseDTO courseDTO) {
         return ResponseEntity.ok(courseService.createCourse(courseDTO));
     }
 

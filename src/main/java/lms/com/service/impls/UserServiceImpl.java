@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageDTO<UserDTO> getPaginationUser(int page, int size) {
-        Sort sort = Sort.by("id").ascending();
+        Sort sort = Sort.by("id").descending();
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<User> userPage = userRepository.findAll(pageable);
 

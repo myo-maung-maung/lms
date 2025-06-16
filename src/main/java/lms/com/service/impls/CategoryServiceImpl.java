@@ -7,8 +7,10 @@ import lms.com.repository.CategoryRepository;
 import lms.com.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,7 +20,12 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        Optional<Category> existingCategory = categoryRepository.findByNameIgnoreCase(categoryDTO.getName());
+        if (existingCategory.isPresent()) {
+            throw new RuntimeException("Category with name '" + categoryDTO.getName() + "' already exists");
+        }
         Category category = CategoryMapper.dtoToEntity(categoryDTO);
         Category savedCategory = categoryRepository.save(category);
         return CategoryMapper.entityToDto(savedCategory);
