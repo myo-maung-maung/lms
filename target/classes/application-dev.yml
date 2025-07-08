@@ -1,15 +1,56 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 60MB
+      max-request-size: 300MB
   datasource:
     url: jdbc:oracle:thin:@TESTDB.localdomain:1521/ORATECH
     username: oratechuser
     password: OraTech25
     driver-class-name: oracle.jdbc.OracleDriver
-
   jpa:
-    database-platform: org.hibernate.dialect.OracleDialect
     hibernate:
       ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
+
+user:
+  file:
+    path:
+      absolutePath: /home/test/user-image/image/
+      relativePath: /image/user-image/image/
+
+course:
+  file:
+    path:
+      absolutePath: /home/test/course-image/image/
+      relativePath: /image/course-image/image/
+
+video:
+  file:
+    path:
+      absolutePath: /home/test/course-video/video/
+      relativePath: /video/course-video/video/
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
+
+#logging:
+#  level:
+#    root: INFO
+#    org:
+#      springframework:
+#        web: DEBUG
+#        security: DEBUG
+#    lms:
+#      com:
+#        controller: DEBUG
+#        service: DEBUG
+#        repository: DEBUG

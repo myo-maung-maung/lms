@@ -24,8 +24,8 @@ public class EnrollmentMapper {
     public static EnrollmentDTO entityToDto(Enrollment enrollment) {
         EnrollmentDTO entity = new EnrollmentDTO();
         entity.setId(enrollment.getId());
-        entity.setUserId(enrollment.getUser().getId());
         entity.setCourseId(enrollment.getCourse().getId());
+        entity.setUserId(enrollment.getUser().getId());
         entity.setEnrolledAt(enrollment.getEnrolledAt());
         entity.setStatus(enrollment.getStatus());
         return entity;

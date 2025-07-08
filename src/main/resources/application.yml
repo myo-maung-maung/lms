@@ -3,7 +3,7 @@ spring:
     banner-mode: CONSOLE
   application:
     version: 1.0.0
-    name: ONLINE_LEARNING-MANAGEMENT-SYSTEM
+    name: ONLINE-LEARNING-MANAGEMENT-SYSTEM
   profiles:
     active: dev
 server:

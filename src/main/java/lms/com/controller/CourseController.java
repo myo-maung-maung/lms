@@ -1,13 +1,20 @@
 package lms.com.controller;
 
 import jakarta.validation.Valid;
+import lms.com.common.Constant;
+import lms.com.common.LMSResponse;
 import lms.com.dtos.CourseDTO;
 import lms.com.dtos.PageDTO;
 import lms.com.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,32 +22,46 @@ import java.util.List;
 @RequestMapping("/api/v1/course")
 public class CourseController {
 
+    private static final Logger logger = LoggerFactory.getLogger(CourseController.class);
     private final CourseService courseService;
 
-    @PostMapping("/create")
-    public ResponseEntity<CourseDTO> create(@Valid @RequestBody CourseDTO courseDTO) {
+    @GetMapping("/test")
+    public String test() {
+        logger.debug("This is a debug message");
+        logger.trace("This is a trace message");
+        return "Test successful";
+    }
+
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<LMSResponse> create(@Valid @ModelAttribute CourseDTO courseDTO) throws IOException {
         return ResponseEntity.ok(courseService.createCourse(courseDTO));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<CourseDTO>> getAll() {
-        return ResponseEntity.ok(courseService.getAllCourse());
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN', 'STUDENT')")
+    public ResponseEntity<LMSResponse> getAll() {
+        List<CourseDTO> course = courseService.getAllCourse();
+        return ResponseEntity.ok(LMSResponse.success(Constant.GET_ALL, course));
     }
 
-    @GetMapping("/{courseId}")
-    public ResponseEntity<CourseDTO> getById(@PathVariable Long courseId) {
+    @GetMapping("/details/{courseId}")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN', 'STUDENT')")
+    public ResponseEntity<LMSResponse> getById(@PathVariable Long courseId) {
         return ResponseEntity.ok(courseService.getCourse(courseId));
     }
 
     @PutMapping("/updated/{courseId}")
-    public ResponseEntity<CourseDTO> updated(@RequestBody CourseDTO courseDTO, @PathVariable Long courseId) {
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<LMSResponse> updated(@RequestBody CourseDTO courseDTO, @PathVariable Long courseId) {
         return ResponseEntity.ok(courseService.updateCourse(courseId, courseDTO));
     }
 
     @DeleteMapping("/delete/{courseId}")
-    public ResponseEntity<Void> delete(@PathVariable Long courseId) {
+    @PreAuthorize("hasRole('INSTRUCTOR')")
+    public ResponseEntity<LMSResponse> delete(@PathVariable Long courseId) {
         courseService.deleteCourse(courseId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(LMSResponse.success(Constant.COURSE_DELETE, null));
     }
 
     @GetMapping("/search")
@@ -53,10 +74,24 @@ public class CourseController {
     }
 
     @GetMapping("/pagination")
-    public ResponseEntity<PageDTO<CourseDTO>> getPaginationCourse(
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN', 'STUDENT')")
+    public ResponseEntity<LMSResponse> getPaginationCourse(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "2") int size
     ) {
-        return ResponseEntity.ok(courseService.getPaginationCourse(page, size));
+        PageDTO<CourseDTO> pageDto = courseService.getPaginationCourse(page, size);
+        return ResponseEntity.ok(LMSResponse.success(Constant.PAGINATION, pageDto));
+    }
+
+    @PutMapping("/approve/{courseId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LMSResponse> approve(@PathVariable Long courseId) {
+        return ResponseEntity.ok(courseService.approveCourse(courseId));
+    }
+
+    @PutMapping("/reject/{courseId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<LMSResponse> reject(@PathVariable Long courseId) {
+        return ResponseEntity.ok(courseService.rejectCourse(courseId));
     }
 }

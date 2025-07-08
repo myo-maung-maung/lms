@@ -15,8 +15,10 @@ public class CourseMapper {
         return Course.builder()
                 .id(dto.getId())
                 .title(dto.getTitle())
+                .status(dto.getStatus())
                 .instructor(instructor)
                 .category(category)
+                .imagePath(dto.getImagePath())
                 .build();
     }
 
@@ -28,6 +30,8 @@ public class CourseMapper {
         return CourseDTO.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
+                .status(entity.getStatus())
+                .imagePath(entity.getImagePath())
                 .instructorId(entity.getInstructor() != null ? entity.getInstructor().getId() : null)
                 .categoryId(entity.getCategory() != null ? entity.getCategory().getId() : null)
                 .build();

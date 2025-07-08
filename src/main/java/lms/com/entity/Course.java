@@ -2,6 +2,7 @@ package lms.com.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lms.com.entity.enums.EnrollmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,14 @@ public class Course {
     @Column(unique = true)
     private String title;
 
+    @Enumerated(EnumType.STRING)
+    private EnrollmentStatus status;
+
+    @ElementCollection
+    @CollectionTable(name = "course_images", joinColumns = @JoinColumn(name = "course_id"))
+    @Column(name = "image_path")
+    private List<String> imagePath;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id")
     private User instructor;
@@ -33,6 +42,10 @@ public class Course {
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Enrollment> enrollments;
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Video> videos;
 
     // No-args constructor
 //    public Course() {
@@ -55,7 +68,6 @@ public class Course {
 //        private Long id;
 //        private String title;
 //        private User instructor;
-//        private Category category;
 //        private List<Lecture> lectures;
 //        private List<Enrollment> enrollments;
 //

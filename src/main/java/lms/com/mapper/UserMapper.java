@@ -2,7 +2,6 @@ package lms.com.mapper;
 
 import lms.com.dtos.UserDTO;
 import lms.com.entity.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class UserMapper {
@@ -17,6 +16,7 @@ public class UserMapper {
                 .email(dto.getEmail())
                 .username(dto.getUserName())
                 .userRole(dto.getUserRole())
+                .imagePath(dto.getImagePath())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
     }
@@ -32,6 +32,7 @@ public class UserMapper {
                 .userName(entity.getUsername())
                 .userRole(entity.getUserRole())
                 .password("*****")
+                .imagePath(entity.getImagePath())
                 .build();
     }
 }
