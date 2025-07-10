@@ -1,5 +1,6 @@
 package lms.com.service;
 
+import lms.com.common.LMSResponse;
 import lms.com.dtos.PageDTO;
 import lms.com.dtos.UserDTO;
 
@@ -17,4 +18,6 @@ public interface UserService {
     List<UserDTO> getStudents();
 
     PageDTO<UserDTO> getPaginationUser(int page, int size);
+
+    void deleteUser(Long userId);
 }

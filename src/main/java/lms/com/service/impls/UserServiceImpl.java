@@ -1,11 +1,13 @@
 package lms.com.service.impls;
 
 import jakarta.annotation.PostConstruct;
+import lms.com.common.Constant;
 import lms.com.dtos.PageDTO;
 import lms.com.dtos.UserDTO;
 import lms.com.entity.User;
 import lms.com.entity.enums.Role;
 import lms.com.exceptions.DuplicateException;
+import lms.com.exceptions.EntityNotFoundException;
 import lms.com.mapper.UserMapper;
 import lms.com.repository.UserRepository;
 import lms.com.service.UserService;
@@ -107,4 +109,14 @@ public class UserServiceImpl implements UserService {
 
         return PageDTO.of(dtoPage);
     }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException(Constant.USER_NOT_FOUND);
+        }
+        userRepository.deleteById(userId);
+    }
+
 }

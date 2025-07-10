@@ -4,7 +4,7 @@ public class Constant {
     public static final int SUCCESS_CODE = 200;
     public static final int FAILURE_CODE = 400;
     public static final String GET_ALL = "Fetched all data from system.";
-
+    public static final String USER_DELETE = "User account delete successfully.";
     public static final String USER_REGISTERED = "User registered in system";
     public static final String USER_REGISTER_SUCCESS = "Registered successfully";
     public static final String USER_NOT_FOUND = "User not found in system";

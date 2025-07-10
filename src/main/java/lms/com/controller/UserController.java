@@ -56,4 +56,11 @@ public class UserController {
         PageDTO<UserDTO> pageDto = userService.getPaginationUser(page, size);
         return ResponseEntity.ok(LMSResponse.success(Constant.PAGINATION, pageDto));
     }
+
+    @DeleteMapping("/delete/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<LMSResponse> deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+        return ResponseEntity.ok(LMSResponse.success(Constant.USER_DELETE, null));
+    }
 }
