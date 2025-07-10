@@ -9,6 +9,7 @@ import lms.com.entity.Enrollment;
 import lms.com.entity.User;
 import lms.com.entity.enums.EnrollmentStatus;
 import lms.com.entity.enums.Role;
+import lms.com.exceptions.EntityNotFoundException;
 import lms.com.mapper.EnrollmentMapper;
 import lms.com.repository.CourseRepository;
 import lms.com.repository.EnrollmentRepository;
@@ -40,10 +41,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Transactional
     public LMSResponse enrollStudent(EnrollmentDTO enrollmentDTO) {
         User student = userRepository.findById(enrollmentDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
         Course course = courseRepository.findById(enrollmentDTO.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         Enrollment enrollment = EnrollmentMapper.dtoToEntity(enrollmentDTO, student, course);
         enrollment.setUser(student);
@@ -59,7 +60,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Transactional
     public LMSResponse approveEnrollment(Long enrollmentId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Enrollment not found"));
         enrollment.setStatus(EnrollmentStatus.APPROVED);
 
         Enrollment savedEnroll = enrollmentRepository.save(enrollment);
@@ -77,7 +78,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Transactional
     public LMSResponse rejectedEnrollment(Long enrollmentId) {
         Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
-                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Enrollment not found"));
         enrollment.setStatus(EnrollmentStatus.REJECT);
 
         Enrollment rejected = enrollmentRepository.save(enrollment);
@@ -94,7 +95,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException(Constant.USER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Constant.USER_NOT_FOUND));
 
         Page<Enrollment> enrollPage;
         if (user.getUserRole() == Role.STUDENT) {

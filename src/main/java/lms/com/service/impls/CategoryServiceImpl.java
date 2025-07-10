@@ -6,6 +6,7 @@ import lms.com.dtos.CategoryDTO;
 import lms.com.dtos.PageDTO;
 import lms.com.entity.Category;
 import lms.com.exceptions.DuplicateException;
+import lms.com.exceptions.EntityNotFoundException;
 import lms.com.mapper.CategoryMapper;
 import lms.com.repository.CategoryRepository;
 import lms.com.service.CategoryService;
@@ -43,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public LMSResponse updateCategory(Long categoryId, CategoryDTO categoryDTO) {
         Category existing = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
         existing.setName(categoryDTO.getName());
 
         categoryRepository.save(existing);
@@ -54,7 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void deleteCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
         categoryRepository.delete(category);
     }
 
@@ -78,7 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public LMSResponse getCategoryById(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
         CategoryDTO categoryDTO = CategoryMapper.entityToDto(category);
         return LMSResponse.success(Constant.CATEGORY_ID, categoryDTO);

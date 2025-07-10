@@ -11,6 +11,9 @@ import lms.com.entity.Token;
 import lms.com.entity.User;
 import lms.com.entity.enums.Role;
 import lms.com.entity.enums.TokenType;
+import lms.com.exceptions.BadRequestException;
+import lms.com.exceptions.DuplicateException;
+import lms.com.exceptions.EntityCreationException;
 import lms.com.mapper.UserMapper;
 import lms.com.repository.TokenRepository;
 import lms.com.repository.UserRepository;
@@ -46,19 +49,21 @@ public class AuthService {
 
     public LMSResponse register(UserDTO userDTO) throws IOException {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
-            return LMSResponse.fail(Constant.USER_REGISTERED);
+            throw new DuplicateException(Constant.USER_REGISTERED + userDTO.getEmail());
         }
 
         User user = UserMapper.dtoToEntity(userDTO, passwordEncoder);
         User savedUser = userRepository.save(user);
 
         Long userId = savedUser.getId();
-        String imagePath = null;
         if (userDTO.getImage() != null && !userDTO.getImage().isEmpty()) {
-            imagePath = fileUtil.writeMediaFile(userDTO.getImage(), absolutePath, relativePath, userId);
-            userDTO.setImagePath(imagePath);
-            savedUser.setImagePath(imagePath);
-            userRepository.save(savedUser);
+            try {
+                String imagePath = fileUtil.writeMediaFile(userDTO.getImage(), absolutePath, relativePath, userId);
+                savedUser.setImagePath(imagePath);
+                userRepository.save(savedUser);
+            } catch (IOException ex) {
+                throw new EntityCreationException("User image upload failed.");
+            }
         }
 
         return LMSResponse.success(Constant.USER_REGISTER_SUCCESS, UserMapper.entityToDto(savedUser));
@@ -125,7 +130,7 @@ public class AuthService {
         final String refreshToken;
         final String userEmail;
         if (authHeader == null || !authHeader.startsWith("Bearer")) {
-            return;
+            throw new BadRequestException("Refresh token is missing or malformed.");
         }
         refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(refreshToken);

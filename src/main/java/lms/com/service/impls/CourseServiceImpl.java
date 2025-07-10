@@ -11,6 +11,9 @@ import lms.com.entity.User;
 import lms.com.entity.Video;
 import lms.com.entity.enums.EnrollmentStatus;
 import lms.com.entity.enums.Role;
+import lms.com.exceptions.BadRequestException;
+import lms.com.exceptions.EntityDeletionException;
+import lms.com.exceptions.EntityNotFoundException;
 import lms.com.mapper.CourseMapper;
 import lms.com.mapper.VideoMapper;
 import lms.com.repository.CategoryRepository;
@@ -56,16 +59,16 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public LMSResponse createCourse(CourseDTO courseDTO) throws IOException {
         User instructor = userRepository.findById(courseDTO.getInstructorId())
-                .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Instructor not found"));
 
         Category category = categoryRepository.findById(courseDTO.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
         Long userId = instructor.getId();
         List<String> imagePath = new ArrayList<>();
         for (MultipartFile image: courseDTO.getImages()) {
             if (image.getSize() > 2 * 1024 * 1024) {
-                throw new RuntimeException(Constant.IMAGE_VALIDATION);
+                throw new BadRequestException(Constant.IMAGE_VALIDATION);
             }
             String path = fileUtil.writeMediaFile(image, absolutePath, relativePath, userId);
             imagePath.add(path);
@@ -89,19 +92,19 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public LMSResponse updateCourse(Long courseId, CourseDTO courseDTO) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         course.setTitle(courseDTO.getTitle());
 
         if (courseDTO.getInstructorId() != null) {
             User instructor = userRepository.findById(courseDTO.getInstructorId())
-                    .orElseThrow(() -> new RuntimeException("Instructor not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Instructor not found"));
             course.setInstructor(instructor);
         }
 
         if (courseDTO.getCategoryId() != null) {
             Category category = categoryRepository.findById(courseDTO.getCategoryId())
-                    .orElseThrow(() -> new RuntimeException("Category not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found"));
             course.setCategory(category);
         }
         Course updated = courseRepository.save(course);
@@ -111,7 +114,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public LMSResponse getCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         CourseDTO dto = CourseMapper.entityToDto(course);
         List<Video> videos = videoRepository.findByCourseId(courseId);
@@ -126,7 +129,7 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public void deleteCourse(Long courseId) {
         if (!courseRepository.existsById(courseId)) {
-            throw new RuntimeException("Course not found");
+            throw new EntityDeletionException("Course not found");
         }
         courseRepository.deleteById(courseId);
     }
@@ -157,7 +160,7 @@ public class CourseServiceImpl implements CourseService {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException(Constant.USER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(Constant.USER_NOT_FOUND));
 
         boolean isInstructor = user.getUserRole() == Role.INSTRUCTOR;
         boolean isAdmin = user.getUserRole() == Role.ADMIN;
@@ -179,7 +182,7 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public LMSResponse approveCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException(Constant.COURSE_ID));
+                .orElseThrow(() -> new EntityNotFoundException(Constant.COURSE_ID));
         course.setStatus(EnrollmentStatus.APPROVED);
 
         Course savedCourse  = courseRepository.save(course);
@@ -190,7 +193,7 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     public LMSResponse rejectCourse(Long courseId) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException(Constant.COURSE_ID));
+                .orElseThrow(() -> new EntityNotFoundException(Constant.COURSE_ID));
         course.setStatus(EnrollmentStatus.REJECT);
         Course rejected = courseRepository.save(course);
         return LMSResponse.success(Constant.REJECTED, CourseMapper.entityToDto(rejected));

@@ -6,6 +6,8 @@ import lms.com.dtos.VideoDTO;
 import lms.com.entity.Course;
 import lms.com.entity.User;
 import lms.com.entity.Video;
+import lms.com.exceptions.BadRequestException;
+import lms.com.exceptions.EntityNotFoundException;
 import lms.com.mapper.VideoMapper;
 import lms.com.repository.CourseRepository;
 import lms.com.repository.UserRepository;
@@ -42,10 +44,10 @@ public class VideoServiceImpl implements VideoService {
     public LMSResponse uploadVideo(VideoDTO videoDTO) throws IOException, InterruptedException {
 
         Course course = courseRepository.findById(videoDTO.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         User instructor = userRepository.findById(videoDTO.getInstructorId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         Long userId = instructor.getId();
         List<String> videos = new ArrayList<>();
@@ -53,12 +55,12 @@ public class VideoServiceImpl implements VideoService {
         List<MultipartFile> videoFiles = videoDTO.getVideo();
 
         if (videoFiles.size() > 5) {
-            throw new RuntimeException(Constant.VIDEO_SIZE);
+            throw new BadRequestException(Constant.VIDEO_SIZE);
         }
 
         long totalSize = videoFiles.stream().mapToLong(MultipartFile::getSize).sum();
         if (totalSize > 300L * 1024 * 1024) {
-            throw new RuntimeException("Total video size must not exceed 300MB");
+            throw new BadRequestException("Total video size must not exceed 300MB");
         }
 
         for (MultipartFile videoFile : videoFiles) {
