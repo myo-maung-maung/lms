@@ -1,5 +1,7 @@
 package lms.com.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lms.com.common.LMSResponse;
 import lms.com.dtos.VideoDTO;
@@ -18,6 +20,8 @@ import java.io.IOException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/video")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "VIDEO", description = "Operations related to videos")
 public class VideoController {
 
     private final VideoService videoService;

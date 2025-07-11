@@ -1,5 +1,8 @@
 package lms.com.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lms.com.common.Constant;
 import lms.com.common.LMSResponse;
@@ -18,6 +21,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "USER", description = "Operations related to users")
 public class UserController {
 
     private final UserService userService;

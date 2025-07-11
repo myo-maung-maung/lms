@@ -1,5 +1,7 @@
 package lms.com.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lms.com.common.Constant;
 import lms.com.common.LMSResponse;
@@ -20,6 +22,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/course")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "COURSE", description = "Operations related to courses")
 public class CourseController {
 
     private static final Logger logger = LoggerFactory.getLogger(CourseController.class);

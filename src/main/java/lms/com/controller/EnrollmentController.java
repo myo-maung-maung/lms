@@ -1,5 +1,7 @@
 package lms.com.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lms.com.common.Constant;
 import lms.com.common.LMSResponse;
 import lms.com.dtos.CourseDTO;
@@ -16,6 +18,8 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/enroll")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "ENROLLMENT", description = "Operations related to enrollments")
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
